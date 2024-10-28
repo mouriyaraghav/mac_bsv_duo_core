@@ -6,7 +6,6 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge
 from cocotb_coverage.coverage import *
-# from model_mac32 import *
 
 def mac32_model(a,b,c):
     return (a*b) + c
