@@ -6,12 +6,13 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge
 from cocotb_coverage.coverage import *
+# from model_mac32 import *
 
 def mac32_model(a,b,c):
     return (a*b) + c
 
 @cocotb.test()
-async def test_mac32(dut):
+async def test_mac_s1(dut):
     """ Test to check the working of Integer MAC """
 
     # collecting the testcases
