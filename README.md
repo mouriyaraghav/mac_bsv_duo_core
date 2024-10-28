@@ -1,1 +1,1 @@
-# duo_core_mac_bsv
+# MAC Design and verification
