@@ -36,7 +36,7 @@ def mac_s1(a,b,c):
     return (a*b) + c
 
 @cocotb.test()
-async def test_mac32(dut):
+async def test_mac_s1(dut):
     """ Test to check the working of Integer MAC """
     
     dut.EN_start.value = 0
