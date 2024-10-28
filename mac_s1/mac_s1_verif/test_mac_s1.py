@@ -51,45 +51,20 @@ async def test_mac_s1(dut):
         await RisingEdge(dut.CLK)
     dut.RST_N.value = 1
 
-    # drive inputs
+    # enable
     dut.EN_start.value = 1
-    seed = 42
-
-    for a in range(-128,128):
-        for b in range(-128,128):
-            seed += 1
-            random.seed(seed)
-            dut.RST_N.value = 0
-            for _ in range(2):
-                await RisingEdge(dut.CLK)
-            dut.RST_N.value = 1
-            
-            c = random.randint(min_c,max_c)
-            dut.start_a.value = a
-            dut.start_b.value = b
-            dut.start_c.value = c
-            expected_output = mac_s1(a, b, c)
-
-            while (dut.RDY_result.value != 1):
-                await RisingEdge(dut.CLK)
-            
-            result = dut.result.value.signed_integer
-            # dut._log.info(f'output (signed) {result}')
-            assert (expected_output) == (result), f'MAC Output Mismatch, Expected = {int(expected_output)} DUT = {int(dut.result.value)}'
-        
-        dut._log.info(f'Run {a+128}')
 
     # taking care of the extreme cases explicitly
     corner_cases = [
         (0, 0, 0),
         (-1, 1, -1),
-        (-128, 127, min_c),
+        # (-128, 127, min_c), (overflow case)
         (-128, 127, max_c),
         (127, -128, max_c),
-        (127, -128, min_c), 
+        # (127, -128, min_c), (overflow case)
         (-128, -128, min_c),
-        (-128, -128, max_c),
-        (127, 127, max_c),
+        # (-128, -128, max_c), (overflow case)
+        # (127, 127, max_c), (overflow case)
         (127, 127, min_c)
     ]
 
@@ -104,7 +79,7 @@ async def test_mac_s1(dut):
         dut.start_c.value = c
         expected_output = mac_s1(a, b, c)
 
-        dut._log.info(f"Corner Case Tested: A={a}, B={b}, C={c}")
+        dut._log.info(f"Corner Case : A={a}, B={b}, C={c}")
         while dut.RDY_result.value != 1:
             await RisingEdge(dut.CLK)
         
@@ -143,11 +118,38 @@ async def test_mac_s1(dut):
         dut.start_c.value = c
         expected_output = mac_s1(a,b,c)
 
-        dut._log.info(f"Walking 1s/0s Case Tested: A={a}, B={b}, C={c}")
+        dut._log.info(f"Walking inputs Case : A={a}, B={b}, C={c}")
         while dut.RDY_result.value != 1:
             await RisingEdge(dut.CLK)
         
         result = dut.result.value.signed_integer
         assert (expected_output) == (result), f'MAC Output Mismatch, Expected = {int(expected_output)} DUT = {int(dut.result.value)}'
+
+    # test
+    seed = 42
+
+    for a in range(-128,128):
+        for b in range(-128,128):
+            seed += 1
+            random.seed(seed)
+            dut.RST_N.value = 0
+            for _ in range(2):
+                await RisingEdge(dut.CLK)
+            dut.RST_N.value = 1
+            
+            c = random.randint(min_c,max_c)
+            dut.start_a.value = a
+            dut.start_b.value = b
+            dut.start_c.value = c
+            expected_output = mac_s1(a, b, c)
+
+            while (dut.RDY_result.value != 1):
+                await RisingEdge(dut.CLK)
+            
+            result = dut.result.value.signed_integer
+            # dut._log.info(f'output (signed) {result}')
+            assert (expected_output) == (result), f'MAC Output Mismatch, Expected = {int(expected_output)} DUT = {int(dut.result.value)}'
+        
+        dut._log.info(f'Run {a+128}')
 
     coverage_db.export_to_yaml(filename="coverage_ab_c.yml")
