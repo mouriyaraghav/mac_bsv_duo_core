@@ -684,11 +684,14 @@ module mkAdder_fp32(Adderfp32_ifc);
             if(guard_bita==1'b1)begin
                 if((round_bita==1'b1)||(sticky_bita==1'b1)) begin
                     incr = True;
+                    decr = False;
                 end else if((round_bita==1'b0)&&(sticky_bita==1'b0)) begin
                     if(manfa[0]==1'b0)begin
-                        decr = True;
+                        incr = False;
+                        decr = False;
                     end else begin
                         incr = True;
+                        decr = False;
                     end
                 end
             end
@@ -1047,11 +1050,14 @@ module mkMAC_fp32(MACf32_ifc);
         if(guard_bita==1'b1)begin
             if((round_bita==1'b1)||(sticky_bita==1'b1)) begin
                 incr = True;
+                decr = False;
             end else if((round_bita==1'b0)&&(sticky_bita==1'b0)) begin
                 if(manfa[0]==1'b0)begin
-                    decr = True;
+                    incr = False;
+                    decr = False;
                 end else begin
                     incr = True;
+                    decr = False;
                 end
             end
         end
