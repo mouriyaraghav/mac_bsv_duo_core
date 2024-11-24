@@ -107,8 +107,6 @@ interface MACI32_ifc;
     method ActionValue#(Bit#(32)) result();
 endinterface : MACI32_ifc
 
-
-(*synthesize*)
 module mkRippleCarryAdder9(RCA9_ifc);
 
     function FA_result fulladdition(Bit#(1) a, Bit#(1) b, Bit#(1) cin);
@@ -144,7 +142,6 @@ module mkRippleCarryAdder9(RCA9_ifc);
     
 endmodule : mkRippleCarryAdder9
 
-(*synthesize*)
 module mkRippleCarryAdder32(RCA32_ifc);
     function RCA32_result rippleCarryAddition32 (Bit#(32) a,Bit#(32) b,Bit#(1) cin);
         Bit#(32) sum;
@@ -208,8 +205,6 @@ endmodule : mkRippleCarryAdder25
 // endmodule : mkRippleCarryAdder16
 
 
-
-(*synthesize*)
 module mkArrayAdder8(AA8_ifc);
     function FA_result fulladdition(Bit#(1) a, Bit#(1) b, Bit#(1) cin);
         FA_result res = FA_result{
@@ -601,7 +596,7 @@ module mkMAC_int32_pipelined(MACI32_ifc);
         let d = ab[31:7];
         let e = c[31:7];
 
-        let res_adder = rca25.result(d,e,1'b0);
+        let res_adder = rca25.result(d,e,inp.rpa_carry);
 
         Bool over = False;
         if((d[24]==e[24])&&(d[24]!=res_adder.sum[24])) begin
